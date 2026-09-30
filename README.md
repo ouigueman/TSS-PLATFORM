@@ -10,7 +10,6 @@ This project also demonstrates how a Python web application can connect browser-
 <img width="1920" height="919" alt="image" src="https://github.com/user-attachments/assets/508fe4e6-084f-4f29-979d-95f1c3ef3847" />
 <img width="1918" height="631" alt="image" src="https://github.com/user-attachments/assets/d4854ae7-11d2-4eda-b21d-4cd7dfbea3c4" />
 <img width="1258" height="453" alt="image" src="https://github.com/user-attachments/assets/140e1796-ca29-414e-8b77-692e1490267e" />
-
 ### Gmail and email workflows
 
 - View Gmail accounts and email folders through IMAP.
