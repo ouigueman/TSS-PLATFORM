@@ -1,0 +1,262 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Domains DataBase - TSS Services</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://unpkg.com/@phosphor-icons/web@2.1.1"></script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap');
+        :root { --teal:#0f766e; --teal-bright:#14b8a6; --ink:#183044; }
+        * { box-sizing:border-box; }
+        body { margin:0; min-height:100vh; font-family:Inter,'Segoe UI',system-ui,sans-serif; color:var(--ink);
+               background:radial-gradient(circle at 10% 0%,#dffbf5 0,transparent 34%),#f5f8fb; }
+        .database-overlay { min-height:100vh; padding:28px 18px; background:rgba(15,118,110,.035); }
+        .database-modal { max-width:1180px; min-height:calc(100vh - 56px); margin:auto; background:rgba(255,255,255,.94);
+                          border:1px solid rgba(15,118,110,.14); border-radius:28px; box-shadow:0 28px 80px rgba(23,55,75,.14);
+                          overflow:hidden; }
+        .database-top { padding:25px 30px; color:white; background:linear-gradient(120deg,#115e59,#0f766e 56%,#14b8a6); }
+        .database-top a { color:rgba(255,255,255,.83); }
+        .database-top a:hover { color:white; }
+        .entity-card { border:1px solid #e2e8f0; border-radius:18px; padding:17px; background:#fff; cursor:pointer;
+                       transition:transform .18s,box-shadow .18s,border-color .18s; }
+        .entity-card:hover,.entity-card.selected { transform:translateY(-2px); border-color:#5eead4; box-shadow:0 12px 26px rgba(15,118,110,.12); }
+        .entity-card.selected { box-shadow:0 0 0 2px rgba(20,184,166,.22),0 12px 26px rgba(15,118,110,.12); }
+        .list-editor { min-height:380px; resize:vertical; line-height:1.7; tab-size:2; }
+        .list-editor:disabled { background:#f8fafc; color:#475569; cursor:not-allowed; }
+        .stat-pill { display:inline-flex; align-items:center; gap:7px; padding:7px 11px; border-radius:12px;
+                     background:#f0fdfa; color:#0f766e; font-size:12px; font-weight:700; }
+        .notice { display:none; }
+        .notice.show { display:flex; }
+        @media(max-width:640px) {
+            .database-overlay { padding:0; }
+            .database-modal { min-height:100vh; border-radius:0; }
+            .database-top { padding:21px 18px; }
+        }
+    </style>
+</head>
+<body>
+    {% set page_title = "Domains DataBase" %}
+    {% set page_icon = "ph-database" %}
+    {% include '_header.html' %}
+
+    <div class="database-overlay">
+        <section class="database-modal">
+            <div class="database-top">
+                <div class="flex flex-wrap items-start justify-between gap-4">
+                    <div>
+                        <div class="flex items-center gap-3 mb-2">
+                            <div class="w-11 h-11 rounded-2xl bg-white/15 flex items-center justify-center">
+                                <i class="ph ph-database text-2xl"></i>
+                            </div>
+                            <div>
+                                <p class="text-xs uppercase tracking-[.18em] text-teal-100 font-bold">Shared entity workspace</p>
+                                <h1 class="text-2xl sm:text-3xl font-extrabold tracking-tight">Domains DataBase</h1>
+                            </div>
+                        </div>
+                        <p class="text-sm text-teal-50/85 max-w-2xl">Keep one clean domain list for each entity. Everyone with access can view and copy it; authorized managers can update it.</p>
+                    </div>
+                    <a href="{{ url_for('services') }}" class="inline-flex items-center gap-2 text-sm font-semibold border border-white/25 rounded-xl px-3 py-2 hover:bg-white/10">
+                        <i class="ph ph-arrow-left"></i> Services
+                    </a>
+                </div>
+            </div>
+
+            <div class="p-5 sm:p-8">
+                <div id="notice" class="notice items-center gap-2 rounded-xl px-4 py-3 text-sm font-semibold mb-5"></div>
+
+                <div class="flex flex-wrap items-end justify-between gap-4 mb-4">
+                    <div>
+                        <p class="text-xs uppercase tracking-[.16em] text-slate-400 font-bold">Available lists</p>
+                        <h2 class="text-xl font-bold text-slate-800 mt-1">Choose an entity</h2>
+                    </div>
+                    {% if can_manage %}
+                    <button id="newListBtn" type="button" class="inline-flex items-center gap-2 rounded-xl bg-teal-700 hover:bg-teal-800 text-white px-4 py-2.5 text-sm font-bold shadow-sm transition-colors">
+                        <i class="ph ph-plus-circle text-lg"></i> New list
+                    </button>
+                    {% endif %}
+                </div>
+
+                <div id="entityCards" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3 mb-7"></div>
+
+                <div class="border-t border-slate-100 pt-6">
+                    <div class="flex flex-wrap items-center justify-between gap-3 mb-4">
+                        <div>
+                            <div class="flex items-center gap-2">
+                                <h2 id="editorTitle" class="text-xl font-bold text-slate-800">Select a list</h2>
+                                <span id="managerBadge" class="hidden text-[10px] uppercase tracking-wider font-extrabold bg-teal-50 text-teal-700 rounded-full px-2 py-1">Manager</span>
+                            </div>
+                            <p id="editorSubtitle" class="text-sm text-slate-400 mt-1">Select an entity above to view its domains.</p>
+                        </div>
+                        <div id="editorStats" class="flex flex-wrap gap-2"></div>
+                    </div>
+
+                    <textarea id="domainsEditor" class="list-editor w-full rounded-2xl border border-slate-200 px-4 py-4 text-sm font-mono focus:outline-none focus:ring-2 focus:ring-teal-400 focus:border-teal-400" placeholder="one-domain.com&#10;another-domain.com" disabled></textarea>
+                    <div class="flex flex-wrap items-center justify-between gap-3 mt-4">
+                        <p id="editorHint" class="text-xs text-slate-400"><i class="ph ph-info mr-1"></i>One domain per line. Blank lines are ignored.</p>
+                        <div class="flex flex-wrap gap-2">
+                            <button id="copyBtn" type="button" class="hidden inline-flex items-center gap-2 rounded-xl border border-slate-200 bg-white hover:bg-slate-50 text-slate-700 px-3.5 py-2.5 text-sm font-bold">
+                                <i class="ph ph-copy"></i> Copy
+                            </button>
+                            <a id="downloadBtn" class="hidden inline-flex items-center gap-2 rounded-xl border border-slate-200 bg-white hover:bg-slate-50 text-slate-700 px-3.5 py-2.5 text-sm font-bold" href="#">
+                                <i class="ph ph-download-simple"></i> Download
+                            </a>
+                            {% if can_manage %}
+                            <button id="deleteBtn" type="button" class="hidden inline-flex items-center gap-2 rounded-xl border border-red-200 bg-white hover:bg-red-50 text-red-600 px-3.5 py-2.5 text-sm font-bold">
+                                <i class="ph ph-trash"></i> Delete
+                            </button>
+                            <button id="saveBtn" type="button" class="hidden inline-flex items-center gap-2 rounded-xl bg-teal-700 hover:bg-teal-800 text-white px-4 py-2.5 text-sm font-bold shadow-sm">
+                                <i class="ph ph-check-circle"></i> Save list
+                            </button>
+                            {% endif %}
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </div>
+
+    <script>
+        const CAN_MANAGE = {{ 'true' if can_manage else 'false' }};
+        const IS_TSSW = {{ 'true' if current_user.entity|upper == 'TSSW' else 'false' }};
+        let lists = [];
+        let selected = null;
+
+        const $ = (id) => document.getElementById(id);
+        function showNotice(message, type='success') {
+            const box = $('notice');
+            box.className = `notice show items-center gap-2 rounded-xl px-4 py-3 text-sm font-semibold mb-5 ${type === 'error' ? 'bg-red-50 text-red-700 border border-red-200' : 'bg-teal-50 text-teal-700 border border-teal-200'}`;
+            box.innerHTML = `<i class="ph ${type === 'error' ? 'ph-warning-circle' : 'ph-check-circle'} text-lg"></i><span></span>`;
+            box.querySelector('span').textContent = message;
+            window.clearTimeout(showNotice.timer);
+            showNotice.timer = window.setTimeout(() => box.classList.remove('show'), 4500);
+        }
+        function formatDate(value) {
+            if (!value) return '—';
+            const date = new Date(value);
+            return Number.isNaN(date.getTime()) ? value : date.toLocaleString([], {dateStyle:'medium', timeStyle:'short'});
+        }
+        async function api(url, options={}) {
+            const response = await fetch(url, options);
+            const data = await response.json().catch(() => ({}));
+            if (!response.ok) throw new Error(data.error || 'The request could not be completed.');
+            return data;
+        }
+        function renderCards() {
+            const container = $('entityCards');
+            if (!lists.length) {
+                container.innerHTML = '<div class="sm:col-span-2 lg:col-span-3 rounded-2xl border border-dashed border-slate-300 bg-slate-50 p-8 text-center text-slate-400"><i class="ph ph-database text-3xl"></i><p class="mt-2 text-sm font-semibold">No entities are available.</p></div>';
+                return;
+            }
+            container.innerHTML = lists.map(item => `
+                <button type="button" class="entity-card text-left ${selected && selected.entity === item.entity ? 'selected' : ''}" data-entity="${item.entity}">
+                    <div class="flex items-start justify-between gap-3">
+                        <div class="flex items-center gap-3">
+                            <span class="w-10 h-10 rounded-xl bg-teal-50 text-teal-700 flex items-center justify-center"><i class="ph ph-buildings text-xl"></i></span>
+                            <div><h3 class="font-extrabold text-slate-800">${item.entity}</h3><p class="text-xs text-slate-400 mt-0.5">${item.filename}</p></div>
+                        </div>
+                        <i class="ph ph-caret-right text-slate-300 text-lg mt-2"></i>
+                    </div>
+                    <div class="flex flex-wrap gap-2 mt-4">
+                        <span class="stat-pill"><i class="ph ph-list-numbers"></i>${item.exists ? item.count : 'No list'}</span>
+                        ${item.can_manage ? '<span class="stat-pill"><i class="ph ph-pencil-simple"></i>Manage</span>' : ''}
+                    </div>
+                    <p class="text-[11px] text-slate-400 mt-3">${item.updated_at ? `Updated ${formatDate(item.updated_at)}` : 'Not created yet'}</p>
+                </button>
+            `).join('');
+            container.querySelectorAll('[data-entity]').forEach(card => card.addEventListener('click', () => selectList(card.dataset.entity)));
+        }
+        function renderEditor() {
+            const editor = $('domainsEditor');
+            if (!selected) {
+                $('editorTitle').textContent = 'Select a list';
+                $('editorSubtitle').textContent = 'Select an entity above to view its domains.';
+                $('editorStats').innerHTML = '';
+                editor.value = '';
+                editor.disabled = true;
+                ['copyBtn','downloadBtn','saveBtn','deleteBtn','managerBadge'].forEach(id => $(id)?.classList.add('hidden'));
+                return;
+            }
+            $('editorTitle').textContent = `${selected.entity} domain list`;
+            $('editorSubtitle').textContent = selected.exists
+                ? `Created ${formatDate(selected.created_at)}${selected.created_by ? ` by ${selected.created_by}` : ''} · Updated ${formatDate(selected.updated_at)}${selected.updated_by ? ` by ${selected.updated_by}` : ''}`
+                : 'This entity does not have a list yet.';
+            $('editorStats').innerHTML = `<span class="stat-pill"><i class="ph ph-globe"></i>${selected.count} domains</span><span class="stat-pill"><i class="ph ph-file-text"></i>${selected.filename}</span>`;
+            editor.value = selected.domains.join('\n');
+            editor.disabled = !selected.can_manage;
+            $('copyBtn').classList.remove('hidden');
+            $('downloadBtn').classList.toggle('hidden', !selected.exists);
+            $('downloadBtn').href = `/domains-database/download/${encodeURIComponent(selected.entity)}`;
+            $('managerBadge').classList.toggle('hidden', !selected.can_manage);
+            $('saveBtn')?.classList.remove('hidden');
+            $('saveBtn')?.classList.toggle('hidden', !selected.can_manage);
+            $('deleteBtn')?.classList.toggle('hidden', !selected.can_manage || !selected.exists);
+        }
+        function selectList(entity) {
+            selected = lists.find(item => item.entity === entity) || null;
+            renderCards();
+            renderEditor();
+            window.scrollTo({top: document.body.scrollHeight, behavior:'smooth'});
+        }
+        async function loadLists(preselect) {
+            try {
+                const data = await api('/api/domains-database/lists');
+                lists = data.lists || [];
+                renderCards();
+                if (preselect) selectList(preselect);
+                else if (selected) selectList(selected.entity);
+                else if (lists.length === 1) selectList(lists[0].entity);
+            } catch (error) { showNotice(error.message, 'error'); }
+        }
+        async function saveList() {
+            if (!selected || !selected.can_manage) return;
+            const domains = $('domainsEditor').value;
+            const method = selected.exists ? 'PUT' : 'POST';
+            const url = selected.exists ? `/api/domains-database/lists/${encodeURIComponent(selected.entity)}` : '/api/domains-database/lists';
+            try {
+                const data = await api(url, {method, headers:{'Content-Type':'application/json'}, body:JSON.stringify({entity:selected.entity, domains})});
+                showNotice(`${selected.entity} list saved successfully.`);
+                selected = data.list;
+                await loadLists(selected.entity);
+            } catch (error) { showNotice(error.message, 'error'); }
+        }
+        async function deleteList() {
+            if (!selected || !selected.can_manage || !selected.exists) return;
+            if (!window.confirm(`Delete the ${selected.entity} domain list? This cannot be undone.`)) return;
+            try {
+                await api(`/api/domains-database/lists/${encodeURIComponent(selected.entity)}`, {method:'DELETE'});
+                showNotice(`${selected.entity} list deleted.`);
+                await loadLists(selected.entity);
+                selectList(selected.entity);
+            } catch (error) { showNotice(error.message, 'error'); }
+        }
+        async function createList() {
+            const available = lists.filter(item => !item.exists).map(item => item.entity);
+            if (!available.length) { showNotice('Every available entity already has a list.', 'error'); return; }
+            let entity = available[0];
+            if (IS_TSSW && available.length > 1) {
+                entity = window.prompt(`Entity (${available.join(', ')}):`, available[0]);
+                if (!entity) return;
+                entity = entity.trim().toUpperCase();
+                if (!available.includes(entity)) { showNotice('Choose one of the available entities.', 'error'); return; }
+            }
+            selected = lists.find(item => item.entity === entity) || null;
+            if (!selected) return;
+            selected.can_manage = true;
+            selected.exists = false;
+            selected.domains = [];
+            renderCards(); renderEditor();
+            $('domainsEditor').focus();
+        }
+        $('copyBtn')?.addEventListener('click', async () => {
+            try { await navigator.clipboard.writeText($('domainsEditor').value); showNotice('Domain list copied to the clipboard.'); }
+            catch (_) { showNotice('Clipboard access is not available in this browser.', 'error'); }
+        });
+        $('saveBtn')?.addEventListener('click', saveList);
+        $('deleteBtn')?.addEventListener('click', deleteList);
+        $('newListBtn')?.addEventListener('click', createList);
+        loadLists();
+    </script>
+</body>
+</html>

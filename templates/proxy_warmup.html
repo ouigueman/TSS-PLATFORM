@@ -1,0 +1,325 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Proxy Warmup Process - TSS Services</title>
+    <link rel="icon" type="image/x-icon" href="/static/favicon.png">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://unpkg.com/@phosphor-icons/web@2.1.1"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.4/dist/chart.umd.min.js"></script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Space+Grotesk:wght@500;600;700&display=swap');
+        :root { --ink:#152238; --muted:#718096; --line:#e8edf3; --teal:#0f9f91; --coral:#f07f61; }
+        * { box-sizing:border-box; }
+        body { font-family:'DM Sans', sans-serif; background:#f5f8fb; color:var(--ink); }
+        .display { font-family:'Space Grotesk', sans-serif; }
+        .watermark { position:fixed; z-index:0; right:-38px; bottom:40px; font:700 13rem/0.8 'Space Grotesk',sans-serif; color:rgba(15,159,145,.035); transform:rotate(-90deg); pointer-events:none; user-select:none; }
+        main, header { position:relative; z-index:1; }
+        .hero { position:relative; overflow:hidden; background:linear-gradient(118deg,#13263a 0%,#174a55 54%,#0f9f91 150%); box-shadow:0 18px 48px rgba(20,61,76,.15); }
+        .hero::before,.hero::after { content:''; position:absolute; border:1px solid rgba(255,255,255,.10); border-radius:999px; pointer-events:none; }
+        .hero::before { width:380px; height:380px; right:-100px; top:-230px; }
+        .hero::after { width:230px; height:230px; right:90px; bottom:-180px; }
+        .glass { background:rgba(255,255,255,.88); border:1px solid rgba(226,232,240,.85); box-shadow:0 12px 35px rgba(31,53,76,.06); backdrop-filter:blur(12px); }
+        .stat-card { transition:transform .2s ease, box-shadow .2s ease; }
+        .stat-card:hover { transform:translateY(-2px); box-shadow:0 16px 34px rgba(31,53,76,.10); }
+        .chart-card { min-height:330px; }
+        .chart-wrap { position:relative; height:245px; }
+        .tab { transition:all .18s ease; }
+        .tab.active { color:#087c72; background:#e8faf7; box-shadow:inset 0 0 0 1px #bdeee8; }
+        .record-row { transition:background .15s ease; }
+        .record-row:hover { background:#f8fbfc; }
+        .table-scroll { max-height:560px; overflow:auto; }
+        .table-scroll::-webkit-scrollbar { width:8px; height:8px; }
+        .table-scroll::-webkit-scrollbar-thumb { background:#cbd8df; border-radius:99px; }
+        .pill { display:inline-flex; align-items:center; gap:5px; padding:4px 9px; border-radius:999px; font-size:11px; font-weight:700; white-space:nowrap; }
+        .skeleton { background:linear-gradient(90deg,#eef3f6 25%,#f8fafb 50%,#eef3f6 75%); background-size:200% 100%; animation:shimmer 1.4s infinite; }
+        @keyframes shimmer { to { background-position:-200% 0; } }
+        @media (max-width:640px) {
+            .watermark { display:none; }
+            .hero { border-radius:22px; }
+            .chart-card { min-height:290px; }
+            .chart-wrap { height:210px; }
+        }
+    </style>
+</head>
+<body class="min-h-screen">
+    <div class="watermark">TSS</div>
+    {% set page_title = "Proxy Warmup Process" %}
+    {% set page_icon = "ph-chart-line-up" %}
+    {% include '_header.html' %}
+
+    <main class="max-w-7xl mx-auto px-4 sm:px-6 py-6 sm:py-8">
+        <section class="hero rounded-[26px] px-5 py-7 sm:px-8 sm:py-9 text-white mb-6">
+            <div class="relative z-10 flex flex-col lg:flex-row lg:items-end justify-between gap-7">
+                <div class="max-w-2xl">
+                    <div class="flex items-center gap-2 text-teal-200 text-xs font-bold uppercase tracking-[.18em] mb-3">
+                        <span class="w-2 h-2 rounded-full bg-teal-300 shadow-[0_0_0_5px_rgba(94,234,212,.13)]"></span>
+                        Process intelligence
+                    </div>
+                    <h1 class="display text-3xl sm:text-4xl font-bold tracking-tight">Proxy warmup, made clear.</h1>
+                    <p class="text-slate-200/80 text-sm sm:text-base mt-3 leading-relaxed max-w-xl">
+                        See how proxy activity moves across News Subscription and Youtube processes. The dashboard reads the latest records whenever you refresh.
+                    </p>
+                </div>
+                <div class="flex flex-wrap items-center gap-3">
+                    <div id="sourceStatus" class="flex items-center gap-2 rounded-full bg-white/10 border border-white/15 px-3 py-2 text-xs text-slate-200">
+                        <i class="ph ph-circle-notch animate-spin"></i><span>Reading result files…</span>
+                    </div>
+                    <button id="refreshBtn" type="button" onclick="loadData(true)"
+                            class="inline-flex items-center gap-2 rounded-xl bg-white px-4 py-2.5 text-sm font-bold text-slate-700 shadow-lg shadow-slate-950/10 hover:bg-teal-50 transition-colors">
+                        <i id="refreshIcon" class="ph ph-arrows-clockwise text-lg"></i>
+                        Refresh records
+                    </button>
+                </div>
+            </div>
+            <div class="relative z-10 mt-7 flex flex-wrap items-center gap-x-6 gap-y-2 text-xs text-slate-200/75">
+                <span class="inline-flex items-center gap-1.5"><i class="ph ph-folder-open text-teal-200"></i> Live file view</span>
+                <span class="inline-flex items-center gap-1.5"><i class="ph ph-clock text-teal-200"></i> Latest rows first</span>
+                <span id="lastRead" class="inline-flex items-center gap-1.5"><i class="ph ph-check-circle text-teal-200"></i> Waiting for first read</span>
+            </div>
+        </section>
+
+        <section class="grid grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4 mb-6" aria-label="Warmup summary">
+            <div class="stat-card glass rounded-2xl p-4 sm:p-5">
+                <div class="flex justify-between items-start"><div class="w-10 h-10 rounded-xl bg-teal-50 text-teal-700 flex items-center justify-center text-xl"><i class="ph ph-activity"></i></div><span class="pill bg-teal-50 text-teal-700">All time</span></div>
+                <p class="text-xs font-semibold text-slate-400 uppercase tracking-wide mt-4">Total records</p>
+                <p id="statTotal" class="display text-2xl sm:text-3xl font-bold mt-1 text-slate-800">—</p>
+            </div>
+            <div class="stat-card glass rounded-2xl p-4 sm:p-5">
+                <div class="flex justify-between items-start"><div class="w-10 h-10 rounded-xl bg-orange-50 text-orange-600 flex items-center justify-center text-xl"><i class="ph ph-newspaper"></i></div><span class="pill bg-orange-50 text-orange-700">Scenario 1</span></div>
+                <p class="text-xs font-semibold text-slate-400 uppercase tracking-wide mt-4">News Subscription</p>
+                <p id="statScenario1" class="display text-2xl sm:text-3xl font-bold mt-1 text-slate-800">—</p>
+            </div>
+            <div class="stat-card glass rounded-2xl p-4 sm:p-5">
+                <div class="flex justify-between items-start"><div class="w-10 h-10 rounded-xl bg-indigo-50 text-indigo-600 flex items-center justify-center text-xl"><i class="ph ph-youtube-logo"></i></div><span class="pill bg-indigo-50 text-indigo-700">Scenario 2</span></div>
+                <p class="text-xs font-semibold text-slate-400 uppercase tracking-wide mt-4">Youtube Process</p>
+                <p id="statScenario2" class="display text-2xl sm:text-3xl font-bold mt-1 text-slate-800">—</p>
+            </div>
+            <div class="stat-card glass rounded-2xl p-4 sm:p-5">
+                <div class="flex justify-between items-start"><div class="w-10 h-10 rounded-xl bg-sky-50 text-sky-600 flex items-center justify-center text-xl"><i class="ph ph-stack"></i></div><span class="pill bg-sky-50 text-sky-700">Distinct</span></div>
+                <p class="text-xs font-semibold text-slate-400 uppercase tracking-wide mt-4">Unique proxies</p>
+                <p id="statProxies" class="display text-2xl sm:text-3xl font-bold mt-1 text-slate-800">—</p>
+            </div>
+        </section>
+
+        <section class="grid grid-cols-1 lg:grid-cols-[1.6fr_1fr] gap-5 mb-5">
+            <div class="glass rounded-2xl p-5 sm:p-6 chart-card">
+                <div class="flex items-start justify-between gap-4 mb-4">
+                    <div>
+                        <p class="text-xs font-bold uppercase tracking-[.15em] text-teal-700">Activity pulse</p>
+                        <h2 class="display text-xl font-bold text-slate-800 mt-1">Records over the last 14 days</h2>
+                        <p class="text-xs text-slate-400 mt-1">A combined view of both warmup scenarios.</p>
+                    </div>
+                    <div class="w-9 h-9 rounded-xl bg-slate-50 text-slate-400 flex items-center justify-center"><i class="ph ph-chart-line-up text-lg"></i></div>
+                </div>
+                <div class="chart-wrap"><canvas id="activityChart" aria-label="Records over the last 14 days"></canvas><div id="activityEmpty" class="hidden absolute inset-0 items-center justify-center text-sm text-slate-400">No activity records yet.</div></div>
+            </div>
+            <div class="glass rounded-2xl p-5 sm:p-6 chart-card">
+                <div class="mb-4">
+                    <p class="text-xs font-bold uppercase tracking-[.15em] text-orange-600">Scenario mix</p>
+                    <h2 class="display text-xl font-bold text-slate-800 mt-1">Where activity happened</h2>
+                    <p class="text-xs text-slate-400 mt-1">Share of all valid records.</p>
+                </div>
+                <div class="chart-wrap"><canvas id="mixChart" aria-label="Scenario mix"></canvas><div id="mixEmpty" class="hidden absolute inset-0 items-center justify-center text-sm text-slate-400">No activity records yet.</div></div>
+            </div>
+        </section>
+
+        <section class="grid grid-cols-1 lg:grid-cols-2 gap-5 mb-6">
+            <div class="glass rounded-2xl p-5 sm:p-6">
+                <div class="flex items-center justify-between mb-4">
+                    <div><p class="text-xs font-bold uppercase tracking-[.15em] text-orange-600">News Subscription</p><h2 class="display text-lg font-bold text-slate-800 mt-1">Most used domains</h2></div>
+                    <i class="ph ph-globe-hemisphere-west text-2xl text-orange-300"></i>
+                </div>
+                <div id="domainRanking" class="space-y-3"><div class="skeleton h-4 rounded"></div><div class="skeleton h-4 rounded"></div><div class="skeleton h-4 rounded"></div></div>
+            </div>
+            <div class="glass rounded-2xl p-5 sm:p-6">
+                <div class="flex items-center justify-between mb-4">
+                    <div><p class="text-xs font-bold uppercase tracking-[.15em] text-sky-600">Proxy footprint</p><h2 class="display text-lg font-bold text-slate-800 mt-1">Most active proxies</h2></div>
+                    <i class="ph ph-broadcast text-2xl text-sky-300"></i>
+                </div>
+                <div id="proxyRanking" class="space-y-3"><div class="skeleton h-4 rounded"></div><div class="skeleton h-4 rounded"></div><div class="skeleton h-4 rounded"></div></div>
+            </div>
+        </section>
+
+        <section class="glass rounded-2xl overflow-hidden">
+            <div class="p-5 sm:p-6 border-b border-slate-100">
+                <div class="flex flex-col xl:flex-row xl:items-end justify-between gap-4">
+                    <div>
+                        <p class="text-xs font-bold uppercase tracking-[.15em] text-teal-700">Record explorer</p>
+                        <h2 class="display text-xl font-bold text-slate-800 mt-1">Latest process records</h2>
+                        <p id="tableDescription" class="text-xs text-slate-400 mt-1">The newest rows from the selected scenario appear first.</p>
+                    </div>
+                    <div class="flex flex-col sm:flex-row gap-2">
+                        <label class="relative block">
+                            <i class="ph ph-magnifying-glass absolute left-3 top-1/2 -translate-y-1/2 text-slate-400"></i>
+                            <input id="recordSearch" type="search" placeholder="Search proxy, domain or Gmail…" class="w-full sm:w-72 pl-9 pr-3 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-sm outline-none focus:bg-white focus:ring-2 focus:ring-teal-200 focus:border-teal-400">
+                        </label>
+                    </div>
+                </div>
+                <div class="flex items-center gap-2 mt-5 overflow-x-auto">
+                    <button class="tab active flex-shrink-0 rounded-xl px-3.5 py-2 text-xs font-bold" data-scenario="scenario1" onclick="selectScenario('scenario1')"><i class="ph ph-newspaper mr-1"></i>News Subscription <span id="tabCount1" class="ml-1 opacity-60"></span></button>
+                    <button class="tab flex-shrink-0 rounded-xl px-3.5 py-2 text-xs font-bold text-slate-500 hover:bg-slate-50" data-scenario="scenario2" onclick="selectScenario('scenario2')"><i class="ph ph-youtube-logo mr-1"></i>Youtube Process <span id="tabCount2" class="ml-1 opacity-60"></span></button>
+                </div>
+            </div>
+            <div class="table-scroll">
+                <table class="w-full text-left border-collapse">
+                    <thead class="sticky top-0 z-10 bg-[#fbfcfd] border-b border-slate-200">
+                        <tr id="recordHead"></tr>
+                    </thead>
+                    <tbody id="recordBody">
+                        <tr><td class="p-8"><div class="skeleton h-4 rounded w-1/2 mx-auto"></div></td></tr>
+                    </tbody>
+                </table>
+            </div>
+            <div class="flex flex-col sm:flex-row items-center justify-between gap-2 px-5 py-3 border-t border-slate-100 text-xs text-slate-400">
+                <span id="recordCount">Loading records…</span>
+                <span class="inline-flex items-center gap-1.5"><i class="ph ph-info"></i>Showing up to the latest 150 rows</span>
+            </div>
+        </section>
+    </main>
+
+    <script>
+        const state = { data: null, scenario: 'scenario1', charts: {} };
+        const numberFormat = new Intl.NumberFormat();
+        const esc = value => String(value ?? '').replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#039;'}[c]));
+        const formatNumber = value => numberFormat.format(value || 0);
+        const formatDate = value => {
+            if (!value) return '—';
+            const parts = value.split('-');
+            return parts.length === 3 ? `${parts[2]}/${parts[1]}/${parts[0]}` : value;
+        };
+        const formatDateTime = record => `${formatDate(record.date)} · ${record.time || '—'}`;
+
+        function setText(id, value) { const element = document.getElementById(id); if (element) element.textContent = value; }
+
+        function updateSummary(data) {
+            const overview = data.overview;
+            setText('statTotal', formatNumber(overview.total));
+            setText('statScenario1', formatNumber(overview.scenario1_total));
+            setText('statScenario2', formatNumber(overview.scenario2_total));
+            setText('statProxies', formatNumber(overview.unique_proxies));
+            setText('tabCount1', `(${formatNumber(data.scenarios.scenario1.total)})`);
+            setText('tabCount2', `(${formatNumber(data.scenarios.scenario2.total)})`);
+            const available = overview.files_available;
+            const status = document.getElementById('sourceStatus');
+            status.innerHTML = `<span class="w-2 h-2 rounded-full ${available === 2 ? 'bg-teal-300' : available === 1 ? 'bg-amber-300' : 'bg-rose-300'}"></span><span>${available}/2 result files available</span>`;
+            setText('lastRead', overview.latest ? `Latest record: ${formatDateTime(overview.latest)}` : 'No valid records found');
+            if (overview.malformed) setText('tableDescription', `${formatNumber(overview.malformed)} malformed row${overview.malformed === 1 ? '' : 's'} skipped while reading. The newest valid rows appear first.`);
+        }
+
+        function chartDefaults() {
+            return { responsive:true, maintainAspectRatio:false, plugins:{ legend:{ labels:{ usePointStyle:true, boxWidth:8, color:'#718096', font:{ family:'DM Sans', size:11 } } }, tooltip:{ padding:10, cornerRadius:10, displayColors:false } }, scales:{ x:{ grid:{ display:false }, ticks:{ color:'#94a3b8', font:{ family:'DM Sans', size:10 } } }, y:{ beginAtZero:true, grid:{ color:'#eef2f5' }, ticks:{ color:'#94a3b8', precision:0, font:{ family:'DM Sans', size:10 } } } } };
+        }
+
+        function renderCharts(data) {
+            Object.values(state.charts).forEach(chart => chart.destroy());
+            state.charts = {};
+            const overview = data.overview;
+            const hasActivity = overview.total > 0;
+            document.getElementById('activityEmpty').classList.toggle('hidden', hasActivity);
+            document.getElementById('activityEmpty').classList.toggle('flex', !hasActivity);
+            document.getElementById('mixEmpty').classList.toggle('hidden', hasActivity);
+            document.getElementById('mixEmpty').classList.toggle('flex', !hasActivity);
+            if (!window.Chart) return;
+
+            state.charts.activity = new Chart(document.getElementById('activityChart'), {
+                type:'line',
+                data:{ labels:overview.dates.map(formatDate), datasets:[{ data:overview.daily, borderColor:'#0f9f91', backgroundColor:'rgba(15,159,145,.12)', borderWidth:2.5, pointRadius:3, pointHoverRadius:5, pointBackgroundColor:'#fff', pointBorderColor:'#0f9f91', fill:true, tension:.38 }] },
+                options:{ ...chartDefaults(), plugins:{ ...chartDefaults().plugins, legend:{ display:false } } }
+            });
+            state.charts.mix = new Chart(document.getElementById('mixChart'), {
+                type:'doughnut',
+                data:{ labels:['News Subscription','Youtube Process'], datasets:[{ data:[overview.scenario1_total,overview.scenario2_total], backgroundColor:['#f07f61','#667eea'], borderColor:'#fff', borderWidth:5, hoverOffset:5 }] },
+                options:{ responsive:true, maintainAspectRatio:false, cutout:'70%', plugins:{ legend:{ position:'bottom', labels:{ usePointStyle:true, padding:16, color:'#718096', font:{ family:'DM Sans', size:11 } } }, tooltip:{ padding:10, cornerRadius:10 } } }
+            });
+        }
+
+        function renderRanking(id, rows, colorClass) {
+            const container = document.getElementById(id);
+            if (!rows.length) {
+                container.innerHTML = '<p class="text-sm text-slate-400 py-3">No records for this view yet.</p>';
+                return;
+            }
+            const max = rows[0].value || 1;
+            container.innerHTML = rows.slice(0, 5).map((row, index) => `
+                <div>
+                    <div class="flex items-center justify-between gap-3 mb-1.5">
+                        <span class="text-xs font-semibold text-slate-600 truncate" title="${esc(row.label)}"><span class="inline-flex w-5 h-5 items-center justify-center rounded-md ${colorClass} text-[10px] mr-1.5">${index + 1}</span>${esc(row.label)}</span>
+                        <span class="text-xs font-bold text-slate-700">${formatNumber(row.value)}</span>
+                    </div>
+                    <div class="h-1.5 rounded-full bg-slate-100 overflow-hidden"><div class="h-full rounded-full ${colorClass.replace('bg-', 'bg-')} opacity-80" style="width:${Math.max(5, row.value / max * 100)}%"></div></div>
+                </div>`).join('');
+        }
+
+        function renderTable() {
+            const scenario = state.data?.scenarios?.[state.scenario];
+            if (!scenario) return;
+            const search = document.getElementById('recordSearch').value.trim().toLowerCase();
+            const records = scenario.records.filter(record => Object.values(record).some(value => String(value).toLowerCase().includes(search)));
+            const head = document.getElementById('recordHead');
+            const body = document.getElementById('recordBody');
+            const common = '<th class="px-5 py-3 text-xs font-bold uppercase tracking-wider text-slate-400 whitespace-nowrap">Proxy</th><th class="px-4 py-3 text-xs font-bold uppercase tracking-wider text-slate-400 whitespace-nowrap">Date &amp; time</th>';
+            if (state.scenario === 'scenario1') {
+                head.innerHTML = common.replace('</tr>', '') + '<th class="px-4 py-3 text-xs font-bold uppercase tracking-wider text-slate-400 whitespace-nowrap">Domain</th><th class="px-4 py-3 text-xs font-bold uppercase tracking-wider text-slate-400 whitespace-nowrap">Gmail account</th></tr>';
+            } else {
+                head.innerHTML = common + '</tr>';
+            }
+            if (!records.length) {
+                body.innerHTML = `<tr><td colspan="${state.scenario === 'scenario1' ? 4 : 2}" class="py-16 text-center"><i class="ph ph-file-dashed text-4xl text-slate-300"></i><p class="mt-3 text-sm font-semibold text-slate-500">${search ? 'No matching records' : 'No records available'}</p><p class="text-xs text-slate-400 mt-1">${search ? 'Try a different search term.' : 'Refresh after the result file receives data.'}</p></td></tr>`;
+            } else {
+                body.innerHTML = records.map(record => {
+                    const proxy = esc(record.proxy);
+                    const dateTime = `<div class="whitespace-nowrap"><span class="text-sm font-semibold text-slate-700">${esc(formatDate(record.date))}</span><span class="block text-xs text-slate-400 mt-0.5">${esc(record.time)}</span></div>`;
+                    if (state.scenario === 'scenario1') return `<tr class="record-row border-b border-slate-100 last:border-0"><td class="px-5 py-3.5"><span class="pill bg-sky-50 text-sky-700 font-mono">${proxy}</span></td><td class="px-4 py-3.5">${dateTime}</td><td class="px-4 py-3.5 text-sm font-medium text-slate-600 max-w-[220px] truncate" title="${esc(record.domain)}">${esc(record.domain)}</td><td class="px-4 py-3.5 text-sm text-slate-500 max-w-[250px] truncate" title="${esc(record.gmail)}">${esc(record.gmail)}</td></tr>`;
+                    return `<tr class="record-row border-b border-slate-100 last:border-0"><td class="px-5 py-3.5"><span class="pill bg-indigo-50 text-indigo-700 font-mono">${proxy}</span></td><td class="px-4 py-3.5">${dateTime}</td></tr>`;
+                }).join('');
+            }
+            setText('recordCount', `${formatNumber(records.length)} latest record${records.length === 1 ? '' : 's'}${search ? ' matching your search' : ''}`);
+        }
+
+        function selectScenario(scenario) {
+            state.scenario = scenario;
+            document.querySelectorAll('.tab').forEach(tab => {
+                const active = tab.dataset.scenario === scenario;
+                tab.classList.toggle('active', active);
+                tab.classList.toggle('text-slate-500', !active);
+            });
+            const selected = state.data?.scenarios?.[scenario];
+            if (selected) {
+                setText('tableDescription', selected.description + ' The newest valid rows appear first.');
+                renderRanking('proxyRanking', selected.top_proxies, scenario === 'scenario1' ? 'bg-sky-100 text-sky-700' : 'bg-indigo-100 text-indigo-700');
+            }
+            renderTable();
+        }
+
+        async function loadData(isRefresh = false) {
+            const button = document.getElementById('refreshBtn');
+            const icon = document.getElementById('refreshIcon');
+            button.disabled = true;
+            icon.classList.add('animate-spin');
+            if (isRefresh) setText('sourceStatus', 'Refreshing result files…');
+            try {
+                const response = await fetch('/api/proxy-warmup/data', { headers:{ 'Accept':'application/json' }, cache:'no-store' });
+                if (!response.ok) throw new Error(response.status === 403 ? 'Permission denied' : 'Unable to read result files');
+                state.data = await response.json();
+                updateSummary(state.data);
+                renderCharts(state.data);
+                renderRanking('domainRanking', state.data.scenarios.scenario1.top_domains, 'bg-orange-100 text-orange-700');
+                const proxyRows = state.data.scenarios[state.scenario].top_proxies;
+                renderRanking('proxyRanking', proxyRows, 'bg-sky-100 text-sky-700');
+                selectScenario(state.scenario);
+            } catch (error) {
+                document.getElementById('sourceStatus').innerHTML = '<span class="w-2 h-2 rounded-full bg-rose-300"></span><span>Could not load records</span>';
+                document.getElementById('recordBody').innerHTML = `<tr><td colspan="4" class="py-16 text-center text-sm text-rose-500"><i class="ph ph-warning-circle text-3xl"></i><p class="mt-2 font-semibold">${esc(error.message)}</p></td></tr>`;
+            } finally {
+                button.disabled = false;
+                icon.classList.remove('animate-spin');
+            }
+        }
+
+        document.getElementById('recordSearch').addEventListener('input', renderTable);
+        loadData();
+    </script>
+</body>
+</html>

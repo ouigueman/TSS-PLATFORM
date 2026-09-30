@@ -1,0 +1,12 @@
+{
+    "allowed_ips": [
+        "154.146.232.18",
+        "197.153.58.193",
+        "209.126.83.114"
+    ],
+    "exempt_users": [
+        "redouan",
+        "M_MORABET",
+        "y.ouiguemane"
+    ]
+}

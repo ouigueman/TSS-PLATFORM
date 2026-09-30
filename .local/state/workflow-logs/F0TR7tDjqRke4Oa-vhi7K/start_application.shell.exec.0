@@ -1,0 +1,8 @@
+[2026-04-10 15:13:57 +0000] [2773] [INFO] Starting gunicorn 25.3.0
+[2026-04-10 15:13:57 +0000] [2773] [INFO] Listening at:  (2773)
+[2026-04-10 15:13:57 +0000] [2773] [INFO] Using worker: sync
+[2026-04-10 15:13:57 +0000] [2784] [INFO] Booting worker with pid: 2784
+[2026-04-10 15:13:57 +0000] [2784] [WARNING] Reloader is on. Use in development only!
+[2026-04-10 15:13:57 +0000] [2773] [INFO] Control socket listening at /home/runner/.gunicorn/gunicorn.ctl
+/home/runner/workspace/.pythonlibs/lib/python3.11/site-packages/spf/config.py:8: UserWarning: pkg_resources is deprecated as an API. See https://setuptools.pypa.io/en/latest/pkg_resources.html. The pkg_resources package is slated for removal as early as 2025-11-30. Refrain from using this package or pin to Setuptools<81.
+  import pkg_resources

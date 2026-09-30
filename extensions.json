@@ -1,0 +1,264 @@
+[
+    {
+        "id": "102",
+        "name": "Header Editor",
+        "creator": "TSSW",
+        "browser": "Chrome",
+        "filename": "102_1768345005.rar",
+        "date": "2026-01-13 22:56"
+    },
+    {
+        "id": "103",
+        "name": "Header Editor",
+        "creator": "TSSW",
+        "browser": "firefox",
+        "filename": "103_1768345029.zip",
+        "date": "2026-01-13 22:57"
+    },
+    {
+        "id": "104",
+        "name": "IPs Warmup Extension",
+        "browser": "firefox",
+        "filename": "104_1790007144.zip",
+        "date": "2026-09-21 16:12",
+        "type": "updated",
+        "added_by": "Tssw Team",
+        "versions": [
+            {
+                "filename": "104_1772466320.zip",
+                "description": "Hi Team,\r\n\r\nIPs Warmup Extension automates your entire IP warmup workflow directly from Firefox. No more manually clicking PAUSE, DELETE, RESET, SCHEDULE, and RESUME for every drop.\r\n\r\nHow it works: Open your deploy panel, click the extension icon after you Install it, paste your IPs with their targets, set your timing, and hit Start. The extension handles everything from there \u2014 sending emails, reading queues, scaling targets automatically, saving results to Google Sheets, and sending a Telegram report after every drop.\r\n\r\nJust configure three things before you start:\r\n\r\n  . Your IPs and send targets (1.2.3.4:5000)\r\n  . Your timing (wait before resume, schedule loop duration, gap between drops)\r\n  . Your Telegram Chat ID to receive reports\r\n  . Your Google Sheets Link in Config.js\r\n\r\nThat's it. The process runs fully unattended until all drops are complete.\r\n\r\nThis is just the beginning \u2014 updates, new features, and improvements are coming\r\n\r\nThe next update is already in progress. Watch this space.",
+                "date": "2026-03-02 15:45",
+                "uploaded_by": "Tssw Team"
+            },
+            {
+                "filename": "104_1772708159.zip",
+                "description": "Hi Team,\r\n\r\nA new update of the IPs Warmup Extension is now available with more control and better stability.\r\n\r\nNew Features\r\n\r\nStop, Pause, and Resume the process anytime\r\n\r\nChoose which drop to start from\r\n\r\nImproved handling of exceptions and unexpected errors during the process\r\n\r\nThese improvements make the warmup workflow more flexible and reliable while still running automatically once started.\r\n\r\nMore improvements and features are coming soon. Stay tuned!",
+                "date": "2026-03-05 10:55",
+                "uploaded_by": "Tssw Team"
+            },
+            {
+                "filename": "104_1772716718.zip",
+                "description": "\ud83d\ude80 IPs Warmup Extension \u2013 New Update\r\n\r\nHi Team,\r\n\r\nA new update of the IPs Warmup Extension is now available with improvements to monitoring and reporting.\r\n\r\nWhat\u2019s New\r\n\r\nImproved Queue Detection \u2013 The extension now checks the Queues page more reliably, ensuring more accurate processing during drops.\r\n\r\nTolerance Percentage \u2013 You can now set a tolerance percentage that will appear in the Telegram report.\r\n\r\nSmarter Google Sheets Coloring \u2013 The extension now uses the tolerance value when evaluating results, so the color indicators in Google Sheets reflect the tolerance threshold.\r\n\r\nThese updates make monitoring results clearer and more accurate.\r\n\r\nMore improvements are on the way.",
+                "date": "2026-03-05 13:18",
+                "uploaded_by": "Tssw Team"
+            },
+            {
+                "filename": "104_1773071303.zip",
+                "description": "Hi Team,\r\n\r\nA new update of the IPs Warmup Extension is available with some useful improvements.\r\n\r\nWhat\u2019s New\r\n\r\n\u2022 Gmail.com Queue Reading \u2013 The extension now uses the Gmail.com URL to read IPs Queues.\r\n\u2022 Smart Detection for Down Servers\r\n\u2022 Start Time Option \u2013 You can now choose the time to start preparing the first drop.\r\n\u2022 Process Info Display \u2013 Important process information is now visible during the whole process.\r\n\u2022 Long Telegram Reports \u2013 If a Telegram message is longer than 4090 characters, the report will be sent automatically as a TXT file.\r\n\r\nWe hope these improvements make your warmup process smoother.",
+                "date": "2026-03-09 15:48",
+                "uploaded_by": "Tssw Team"
+            },
+            {
+                "filename": "104_1773826177.zip",
+                "description": "Hi Team,\r\n\r\nA new update of the IPs Warmup Extension is available with some useful improvements.\r\n\r\nWhat\u2019s New\r\n\r\n\u2022 Spreadsheet ID Input \u2013 You can now set your Google Spreadsheet ID directly from the extension for easier configuration.\r\n\u2022 Improved Tolerance Rate Management \u2013 Enhanced handling of tolerance rate to help increase the number of emails sent more efficiently.\r\n\r\nEnjoy a faster, smarter, and more reliable warmup process.",
+                "date": "2026-03-18 09:29",
+                "uploaded_by": "Tssw Team"
+            },
+            {
+                "filename": "104_1773843319.zip",
+                "description": "Hi Team,\r\n\r\nA new update of the IPs Warmup Extension is available with some useful improvements.\r\n\r\nWhat\u2019s New\r\n\r\n\u2022 The #status element will now show something like \u23f3 First drop starts in 1h 23m 45s\u2026 counting down live.",
+                "date": "2026-03-18 14:15",
+                "uploaded_by": "Tssw Team"
+            },
+            {
+                "filename": "104_1773921751.zip",
+                "description": "Hi Team,\r\n\r\nA new update of the IPs Warmup Extension is available with some useful improvements.\r\n\r\nWhat\u2019s New\r\n\r\n\u2022 You can now Edit on your own deploy page without any issue",
+                "date": "2026-03-19 12:02",
+                "uploaded_by": "Tssw Team"
+            },
+            {
+                "filename": "104_1774253543.zip",
+                "description": "Hi Team,\r\n\r\nA new update of the IPs Warmup Extension is available with some useful improvements.\r\n\r\nWhat\u2019s New\r\n\r\n\u2022 The extension now verifies whether servers are properly paused before starting the warmup process\r\n\u2022 Improved failure messaging when servers are not correctly paused or resumed during drops",
+                "date": "2026-03-23 08:12",
+                "uploaded_by": "Tssw Team"
+            },
+            {
+                "filename": "104_1774945629.zip",
+                "description": "Hi Team,\r\n\r\nA new update of the IPs Warmup Extension is now available, bringing several useful improvements.\r\n\r\nWhat\u2019s New\r\n\r\n\u2022 The extension now verifies that servers are properly paused before starting the warmup process\r\n\u2022 Improved overall behavior and stability when interacting with web pages\r\n\u2022 New Data Lists mode is now available alongside the existing Lists Passive mode\r\n\r\nData Lists Mode \u2013 What\u2019s New?\r\n\r\n\u2022 Remembers where the previous warmup stopped and continues from that point\r\n\u2022 Automatically loops back to the beginning once the end of the list is reached\r\n\u2022 Ensures each drop uses a fresh set of seeds instead of repeating the same ones\r\n\u2022 Automatically switches to Lists Passive mode once the Data warmup is completed\r\n\r\nWhen and how should you use it?\r\n\r\n\u2022 Use it when launching your process with Data Warmup\r\n\u2022 Make sure to select Data Lists mode before starting\r\n\u2022 Helps prevent overusing the same contacts and improves overall efficiency\r\n\r\nFeel free to reach out if you need any assistance \ud83d\ude80",
+                "date": "2026-03-31 08:27",
+                "uploaded_by": "Tssw Team"
+            },
+            {
+                "filename": "104_1775468556.zip",
+                "description": "Hi Team,\r\n\r\nA new update of the IPs Warmup Extension is now available with some useful improvements.\r\n\r\nWhat\u2019s New\r\n\r\n\u2022 Added a new feature to check your test after using a Gmail account with an app password\r\n\u2022 You can now set the extension to stop automatically if spam hits a limit (by number of messages or spam rate)\r\n\u2022 Improved behavior and stability when using select boxes\r\n\u2022 In Data Lists mode, you can now choose to continue with passive seeds when the warmup list reaches 0\r\n\r\nLet us know if you have any questions \ud83d\ude80",
+                "date": "2026-04-06 16:42",
+                "uploaded_by": "Tssw Team"
+            },
+            {
+                "filename": "104_1775648632.zip",
+                "description": "Hi Team,\r\n\r\nA new update of the IPs Warmup Extension is now available with some useful improvements.\r\n\u2022 Pleas Make sure to use this email in you googlesheets: tsssavingsheets@omega-moonlight-468714-t6.iam.gserviceaccount.com\r\n\r\nWhat\u2019s New\r\n\r\n\u2022 All your drops are now saved in our database. This will help us add new features to make your warmup process easier\r\n\u2022 You can now choose more than one list across different modes\r\n\u2022 Improved stability when the process runs into errors or failures\r\n\u2022 You can now run your process across multiple warmup data lists\r\n\u2022 You can now add your personal note to identify your process\r\n\r\n\r\nIf you need help or have feedback, just let us know \ud83d\udc4d",
+                "date": "2026-04-08 11:43",
+                "uploaded_by": "Tssw Team"
+            },
+            {
+                "filename": "104_1775824008.zip",
+                "description": "Hi Team,\r\n\r\nA new version of the IPs Warmup Extension is now available, featuring a few useful improvements.\r\n\r\n\u2022 A new sheet, \"Global IP Stats\", has been added. It preserves your old IPs drop report and lets you review the number of IPs sent in previous processes.\r\n\r\nAs always, feel free to reach out with any questions or feedback. \ud83d\udc4d",
+                "date": "2026-04-10 12:26",
+                "uploaded_by": "Tssw Team"
+            },
+            {
+                "filename": "104_1776076025.zip",
+                "description": "Hi Team,\r\n\r\nA new version of the IPs Warmup Extension is now available, featuring some useful improvements.\r\n\r\nWhat\u2019s new:\r\n\r\n\u2022 You can now \"Enable Remote Stop\" feature and start interact with your extension directly from Telegram. If you\u2019re unable to access the extension, simply send a message to control it. For example, sending \"stop\" will immediately stop the entire process.\r\n\u2192 Note: The command must be sent from the same chat ID used to receive drop reports.\r\n\r\n\u2022 The Stop/Pause actions are now executed instantly \u2014 no need to wait for the next checkpoint.\r\n\r\nAs always, feel free to reach out if you have any questions or feedback \ud83d\udc4d",
+                "date": "2026-04-13 10:27",
+                "uploaded_by": "Tssw Team"
+            },
+            {
+                "filename": "104_1776268405.zip",
+                "description": "Hi Team,\r\n\r\nA new version of the IPs Warmup Extension is now available, featuring some useful improvements.\r\n\r\nWhat\u2019s new:\r\n\r\n\u2022 New form detection logic\r\n\u2022 The extension moves to the next list when the current warmup list hits 1,000 instead of 0\r\n\u2022 For the sending process, the send stops always at thousand rounding. For example:\r\n\u2192 If a warmup list has 82,650, the process will consider it has 82,000\r\n\r\nAs always, feel free to reach out if you have any questions or feedback \ud83d\udc4d",
+                "date": "2026-04-15 15:53",
+                "uploaded_by": "Tssw Team"
+            },
+            {
+                "filename": "104_1776692063.zip",
+                "description": "Hi Team,\r\n\r\nA new version of the IPs Warmup Extension is now available, featuring several useful improvements.\r\n\r\nWhat\u2019s new:\r\n\r\n\u2022 New enhancements to database saving\r\n\u2022 Improved logic for moving between lists and managing the number of sends between IPs\r\n\u2022 The pause/resume check now supports the top 100 items on the MultiMonitor page\r\n\r\nAs always, feel free to reach out if you have any questions or feedback \ud83d\udc4d",
+                "date": "2026-04-20 13:34",
+                "uploaded_by": "Tssw Team"
+            },
+            {
+                "filename": "104_1776949523.zip",
+                "description": "Hi Team,\r\n\r\nA new version of the IPs Warmup Extension is now available, featuring an improvement to IP exclusion handling.\r\n\r\nWhat\u2019s new:\r\n\r\n\u2022 A new section called \u201cExclude IPs\u201d has been added. It allows you to exclude IPs during an ongoing process without stopping it or creating a new one. Simply copy and paste your IPs into the Exclude IPs textarea, and the extension will handle the rest.\r\n\r\n\u2022 The Exclude IPs list is now checked at the start of each drop. Any changes made during a drop will only take effect in the next one, ensuring consistent behavior throughout the current process.\r\n\r\nDon\u2019t hesitate to contact us for any questions or suggestions. \ud83d\ude42",
+                "date": "2026-04-23 13:05",
+                "uploaded_by": "Tssw Team"
+            },
+            {
+                "filename": "104_1778509819.zip",
+                "description": "Hey Team!\n\nA slick new version of the IPs Warmup Extension is live. We\u2019ve been busy under the hood \u2014 check out what\u2019s new. \ud83d\udc47\n\n\ud83c\udccf ISP Shuffle Mode\nWe\u2019re adding some randomness to your day. ISP profiles now shuffle once per session, so every run feels like a fresh spin of the wheel. The logic and quotas stay the same \u2014 just the order gets a little fun.\n\n\ud83d\udcac Latest Messages \u2013 Now a Floating Buddy\nA little panel now lives on the deploy page, checking in with TSSW Manager for new messages. Think of it as your helpful sidekick \u2014 the TSSW Team can reach you anytime without interrupting your flow.\n\n\u270f\ufe0f Add / Update IPs on the Fly\nA brand new textarea panel lets you toss in new IPs or tweak existing ones \u2014 while a session is still running. Changes are picked up before the next drop. Add new ones, update old ones, no drama.\n\n\ud83d\udd01 IP Groups (Rotates Every Drop)\nWant to mix things up even more? Now you can create multiple IP groups that rotate per drop. Cycle through them, then loop back. Each drop gets a fresh crew of IPs, and they\u2019re cleaned up nicely after.\n\n\ud83d\udcca Quota Tracking That\u2019s Got Your Back\nWe\u2019re keeping an eye on your remaining quota, sent emails, and warmup limits \u2014 Auto-refreshing via Our Main API. Delivery counts are reported after each drop. And if the API takes a nap? No worries \u2014 auto recovery kicks in.\n\nGot ideas, questions, or you got problems? Don\u2019t be shy \u2014 reach out anytime. \ud83d\ude42\n\nCheers,\nTSSW Team",
+                "version": "5",
+                "date": "2026-05-11 14:30",
+                "uploaded_by": "Tssw Team"
+            },
+            {
+                "filename": "104_1778837342.zip",
+                "description": "Hi Team,\n\nA new version of the IPs Warmup Extension is now available, featuring an improvement to IP exclusion handling.\n\nWhat\u2019s new:\n\n\u2022 You can now receive a Telegram message with Lists Name Parts that the drops used to process your warmup \u2013 this will help you track the status of each drop.\n\n\u2022 A new Chat section is available to help you contact the TSSW Team without hesitation. Feel free to reach out whenever you need assistance to help you achieve a better process.\n\nDon\u2019t hesitate to contact us with any questions or suggestions. \ud83d\ude42",
+                "version": "6",
+                "date": "2026-05-15 09:29",
+                "uploaded_by": "Tssw Team"
+            },
+            {
+                "filename": "104_1779098166.zip",
+                "description": "Hi Team,\r\n\r\nA new version of the IPs Warmup Extension is now available, featuring an improvement to IP exclusion handling.\r\n\r\nWhat\u2019s new:\r\n\r\n\u2022 New way to process the schedule parts to limit the issue caused by the portal\r\n\u2022 Added more time to the delete process to prevent the issue of running commands\r\n\r\nDon\u2019t hesitate to contact us with any questions or suggestions. \ud83d\ude42",
+                "version": "6.1.0",
+                "date": "2026-05-18 09:56",
+                "uploaded_by": "Tssw Team"
+            },
+            {
+                "filename": "104_1779264509.zip",
+                "description": "Hi Team,\r\n\r\nA new version of the IPs Warmup Extension is ready for you. This update improves how IP exclusion is handled and makes the Extenion easier to use.\r\n\r\nWhat\u2019s new:\r\n\r\n\u2022 The extension now calculates your total out Numbre Sents so you can make better use of what\u2019s left.\r\n\u2022 All your processes are now saved at TssTools:5000/warmup-lists \u2013 feel free to check them there for a clearer overview.\r\n\u2022 We\u2019ve added a new scheduling method to help prevent the portal from interrupting your process.",
+                "version": "6.1.2",
+                "date": "2026-05-20 08:08",
+                "uploaded_by": "Tssw Team",
+                "downloadable": true
+            },
+            {
+                "filename": "104_1779277607.zip",
+                "description": "Hi Team,\n\nA new version of the IPs Warmup Extension is ready for you. This update improves how IP exclusion is handled and makes the extension easier to use.\n\nWhat\u2019s new:\n\n\u2022 Due to a minor issue from the portal, the extension now takes a bit more time to select which IPs to drop \u2014 this helps avoid errors and keeps things stable.\n\u2022 The scheduling process now follows a better logic, so your Drops run more smoothly without interruptions.",
+                "version": "6.1.3",
+                "date": "2026-05-20 11:46",
+                "uploaded_by": "Tssw Team",
+                "downloadable": true
+            },
+            {
+                "filename": "104_1779434719.zip",
+                "description": "Hi Team,\n\nA new version of the IPs Warmup Extension is ready. This release brings smarter IP exclusion handling and an improved user experience.\n\nHere\u2019s what changed:\n\n\u2022 Pause / Resume from MultiMonitors \u2013 A new option that lets you control pause/resume commands directly from the PMTA page. This bypasses previous portal-related issues and applies commands server-wide.\n\n\u2022 IP check percentage control \u2013 Instead of randomly validating a single IP per command, you can now choose the percentage of IPs to verify. A new input field at the top of the extension form gives you full control.\n\n\u26a0\ufe0f Important: The \"Pause/Resume from MultiMonitors\" feature is designed to run commands on the entire server at once.",
+                "version": "6.2.1",
+                "date": "2026-05-22 12:45",
+                "uploaded_by": "Tssw Team",
+                "downloadable": true
+            },
+            {
+                "filename": "104_1782482456.zip",
+                "description": "Hi Team,\r\n\r\nA new version of the IPs Warmup Extension is ready. This release includes a bug fix to improve the accuracy of the spam monitoring feature.\r\n\r\nHere's what changed:\r\n\r\n\u2022 Spam Rate Threshold Fix \u2013 The \"Stop by Spam Rate\" percentage check was previously comparing against the inbox rate instead of the actual spam rate. This has been corrected \u2014 the extension will now properly stop when the spam rate reaches or exceeds the configured threshold.\r\n\r\n\u26a0\ufe0f Note: If you were using the \"Max spam rate (%)\" setting, the behavior will now match what the label describes. Please review your configured threshold values to make sure they reflect your intended spam rate limit.",
+                "version": "6.2.2",
+                "date": "2026-06-26 14:00",
+                "uploaded_by": "Tssw Team",
+                "downloadable": true
+            },
+            {
+                "filename": "104_1783517434.zip",
+                "description": "Hi Team,\r\n\r\nA new version of the IPs Warmup Extension is ready. This release adds a new scheduling option and fixes a stability issue.\r\n\r\nHere's what changed:\r\n\r\n\u2022 Stop Deferred IPs for Next Drop \u2013 You can now choose to stop carrying over deferred IPs into the next drop instead of automatically re-queuing them. This gives you more control over which IPs get retried and when.\r\n\r\n\u2022 Server Connectivity Fix \u2013 Previously, if the status API server was unreachable (down, connection refused, DNS failure, etc.), the extension could incorrectly stop the warmup process. This has been fixed \u2014 the extension now treats server unavailability as a temporary condition and keeps the process running, only showing a warning indicator while it retries in the background.",
+                "version": "6.3.0",
+                "date": "2026-07-08 13:30",
+                "uploaded_by": "Tssw Team",
+                "downloadable": true
+            },
+            {
+                "filename": "104_1784720584.zip",
+                "description": "Hi Team,\r\n\r\nA new version of the IPs Warmup Extension is now available.\r\n\r\nThis update includes changes to the API communication and server connection process to support our new server infrastructure, improving compatibility, stability, and reliability.\r\n\r\nImportant: This update is required. Older versions will no longer work correctly after 01/08/2026.",
+                "version": "7.1.0",
+                "date": "2026-07-22 11:43",
+                "uploaded_by": "Tssw Team",
+                "downloadable": true
+            },
+            {
+                "filename": "104_1784732657.zip",
+                "description": "Hi Team,\n\nA new version of the IPs Warmup Extension is now available.\n\n\u2022 Before stopping, the extension will automatically send the full Warmup Report of the last drop and save it to the database \u2014 ensuring no drop data is lost when the process is halted due to spam.\n\n\u2022 Added a new \"Deferred IPs must Complete all drops\" option. When enabled, the extension automatically runs extra drop cycles after the main process finishes \u2014 targeting only the IPs that were skipped (deferred) during earlier drops.",
+                "version": "7.1.1",
+                "date": "2026-07-22 15:04",
+                "uploaded_by": "Tssw Team",
+                "downloadable": true
+            },
+            {
+                "filename": "104_1785844056.zip",
+                "description": "Hi Team,\r\n\r\nA new version of the IPs Warmup Extension is now available.\r\n\r\n  \u2022 Fixed the send offset logic for Warmup Lists: the extension now correctly remembers where it left off in the list across groups and drops, instead of restarting from 0 too often. This means the list is used more efficiently and evenly, with fewer wasted or repeated positions.\r\n\r\n  \u2022 The offset only resets to 0 when the process actually switches to a different list \u2014 for example when a list's quota runs out and it moves to the next one.",
+                "version": "7.2.0",
+                "date": "2026-08-04 11:47",
+                "uploaded_by": "Tssw Team",
+                "downloadable": true
+            },
+            {
+                "filename": "104_1786437777.zip",
+                "description": "Hi Team,\n\nA new version of the IPs Warmup Extension is now available.\n\n\u2022 Added a new \"Start From\" option: by default, the extension now automatically remembers the last send offset and resumes from it on the next launch, instead of starting back at 0.\n\n\u2022 When enabled, this toggle also lets you manually set a specific starting offset for the next process, giving you direct control over where sending resumes.\n\n\u2022 The last saved offset is now shown at the top of the extension popup, so you always know exactly where an interrupted process left off.",
+                "version": "7.3.0",
+                "date": "2026-09-14 13:53",
+                "uploaded_by": "Tssw Team",
+                "downloadable": true
+            },
+            {
+                "filename": "104_1790007144.zip",
+                "description": "What changed: The Data Provider and Data Profile dropdown selection (and the preflight validation that checks them) previously required an exact keyword:\r\n\r\nData Provider had to contain \"data_TSS\"\r\nData Profile had to contain \"Seeds\"\r\n\r\nNow: Each field accepts either of two keywords, since the actual option text varies:\r\n\r\nData Provider matches \"data_TSS\" or \"Seeds\"\r\nData Profile matches \"Seeds\" or \"seeds_TSS\"",
+                "version": "7.3.2",
+                "date": "2026-09-21 16:12",
+                "uploaded_by": "Tssw Team",
+                "downloadable": true
+            }
+        ]
+    },
+    {
+        "id": "106",
+        "name": "Test/Domains Copy Button",
+        "browser": "firefox",
+        "filename": "106_1776687999.zip",
+        "date": "2026-04-20 12:26",
+        "type": "normal",
+        "added_by": "Tssw Team"
+    },
+    {
+        "id": "107",
+        "name": "Header Editor",
+        "browser": "icedragon",
+        "filename": "107_1782308190.zip",
+        "date": "2026-06-24 13:36",
+        "type": "normal",
+        "added_by": "y.ouiguemane"
+    },
+    {
+        "id": "108",
+        "name": "IPs Warmup Extension",
+        "browser": "icedragon",
+        "filename": "108_1790007398.zip",
+        "date": "2026-09-21 16:16",
+        "type": "normal",
+        "added_by": "y.ouiguemane",
+        "allowed_users": "all"
+    },
+    {
+        "id": "109",
+        "name": " Test/Domains Copy Button ",
+        "browser": "Chrome",
+        "filename": "109_1790163663.zip",
+        "date": "2026-09-23 11:41",
+        "type": "normal",
+        "added_by": "y.ouiguemane",
+        "allowed_users": "all"
+    }
+]

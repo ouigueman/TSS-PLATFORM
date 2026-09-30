@@ -1,0 +1,30 @@
+[2026-04-10 14:26:40 +0000] [2256] [INFO] Starting gunicorn 25.3.0
+[2026-04-10 14:26:40 +0000] [2256] [INFO] Listening at:  (2256)
+[2026-04-10 14:26:40 +0000] [2256] [INFO] Using worker: sync
+[2026-04-10 14:26:40 +0000] [2267] [INFO] Booting worker with pid: 2267
+[2026-04-10 14:26:40 +0000] [2267] [WARNING] Reloader is on. Use in development only!
+[2026-04-10 14:26:40 +0000] [2256] [INFO] Control socket listening at /home/runner/.gunicorn/gunicorn.ctl
+/home/runner/workspace/.pythonlibs/lib/python3.11/site-packages/spf/config.py:8: UserWarning: pkg_resources is deprecated as an API. See https://setuptools.pypa.io/en/latest/pkg_resources.html. The pkg_resources package is slated for removal as early as 2025-11-30. Refrain from using this package or pin to Setuptools<81.
+  import pkg_resources
+WARNING:root:Heartbeat error for TSS1_eugenerush.rush@gmail.com: command: NOOP => unexpected response: b'=?UTF-8?Q?Alerte_Google=C2=A0=3A_Putin?='
+WARNING:root:Heartbeat error for TSS1_smarout97@gmail.com: command: NOOP => socket error: unterminated line: b'\n'
+ERROR:root:Error processing folder [Gmail]/Spam for TSS1_eugenerush.rush@gmail.com: cannot read from timed out object
+ERROR:root:Connection validation failed for TSS1_eugenerush.rush@gmail.com: cannot read from timed out object
+ERROR:root:Connection validation failed for TSS1_smarout97@gmail.com: cannot read from timed out object
+WARNING:root:Heartbeat error for TSS1_smarout97@gmail.com: command: NOOP => unexpected response: b'il 2026 Events'
+WARNING:root:Heartbeat error for TSS1_eugenerush.rush@gmail.com: command: NOOP => unexpected response: b'OTTLED]'
+ERROR:root:Error processing folder [Gmail]/Spam for TSS1_thomas.chelbiii@gmail.com: cannot read from timed out object
+ERROR:root:Error processing folder INBOX for TSS1_thomas.chelbiii@gmail.com: command: SELECT => unexpected response: b'd \\Seen $NotPhishing $Phishing \\*)] Flags permitted.'
+ERROR:root:Error processing folder [Gmail]/Spam for TSS1_thomas.chelbiii@gmail.com: command: SELECT => unexpected response: b'UIDs valid.\r\n* 50 EXISTS\r\n* 0 RECENT\r\n* OK [UIDNEXT 176* 21 FETCH (UID 1763860 FLAGS () BODY[HEADER.FIELDS (FROM SUBJECT DATE)] {175}'
+WARNING:root:No emails fetched for TSS1_thomas.chelbiii@gmail.com - possible connection or access issue
+ERROR:root:Connection validation failed for TSS1_thomas.chelbiii@gmail.com: command: NOOP => unexpected response: b'Subject: =?utf-8?Q?Trusted=20public=20sector=20journalism=2C=20now=2025%=20off?='
+[2026-04-10 15:13:52 +0000] [2267] [INFO] Worker reloading: /home/runner/workspace/app.py modified
+[2026-04-10 15:13:52 +0000] [2267] [INFO] Worker exiting (pid: 2267)
+[2026-04-10 15:13:53 +0000] [2759] [INFO] Booting worker with pid: 2759
+[2026-04-10 15:13:53 +0000] [2256] [INFO] Control socket listening at /home/runner/.gunicorn/gunicorn.ctl
+[2026-04-10 15:13:53 +0000] [2759] [WARNING] Reloader is on. Use in development only!
+/home/runner/workspace/.pythonlibs/lib/python3.11/site-packages/spf/config.py:8: UserWarning: pkg_resources is deprecated as an API. See https://setuptools.pypa.io/en/latest/pkg_resources.html. The pkg_resources package is slated for removal as early as 2025-11-30. Refrain from using this package or pin to Setuptools<81.
+  import pkg_resources
+[2026-04-10 15:13:56 +0000] [2256] [INFO] Handling signal: term
+[2026-04-10 15:13:56 +0000] [2759] [INFO] Worker exiting (pid: 2759)
+[2026-04-10 15:13:56 +0000] [2256] [INFO] Shutting down: Master

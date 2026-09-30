@@ -1,0 +1,99 @@
+{
+    "Manager": {
+        "name": "Manager",
+        "description": "",
+        "permissions": [
+            "Domain_checker",
+            "Extract_emails",
+            "gmass",
+            "blacklist_lookup",
+            "download_extension",
+            "news_sign_subsctiption",
+            "domain_founder",
+            "email_founder",
+            "subdomain_finder",
+            "warmup_lists",
+            "Warmup_History",
+            "add_warmup_record",
+            "warmup_reports"
+        ]
+    },
+    "Team Leader": {
+        "name": "Team Leader",
+        "description": "",
+        "permissions": [
+            "Domain_checker",
+            "Extract_emails",
+            "gmass",
+            "blacklist_lookup",
+            "download_extension",
+            "news_sign_subsctiption",
+            "email_founder",
+            "warmup_lists",
+            "Warmup_History",
+            "add_warmup_record",
+            "warmup_reports",
+            "domains_database"
+        ]
+    },
+    "Agent Mailer": {
+        "name": "Agent Mailer",
+        "description": "",
+        "permissions": [
+            "Domain_checker",
+            "Extract_emails",
+            "download_extension",
+            "news_sign_subsctiption",
+            "email_founder"
+        ]
+    },
+    "Admin Manager": {
+        "name": "Admin Manager",
+        "description": "",
+        "permissions": [
+            "allow_add_gmail_of_news",
+            "Domain_checker",
+            "Extract_emails",
+            "tssw_report",
+            "gmass",
+            "blacklist_lookup",
+            "download_extension",
+            "add_extensions",
+            "quality_helper",
+            "news_sign_subsctiption",
+            "infinity-process",
+            "user_management",
+            "ips_cheker",
+            "add_ip_cheker",
+            "domain_founder",
+            "unlimited_domain_founder",
+            "email_founder",
+            "access_management",
+            "subdomain_finder",
+            "processes_management",
+            "warmup_lists",
+            "warmup_lists_admin",
+            "Warmup_History",
+            "add_warmup_record",
+            "warmup_reports",
+            "warmup_sessions",
+            "proxy_warmup",
+            "display_extensions_users",
+            "domains_database",
+            "manage_domain_lists",
+            "seeds_desktop_status"
+        ]
+    },
+    "Tssw Mailer": {
+        "name": "Tssw Mailer",
+        "description": "",
+        "permissions": [
+            "download_extension",
+            "warmup_lists",
+            "Warmup_History",
+            "warmup_reports",
+            "warmup_sessions",
+            "domains_database"
+        ]
+    }
+}

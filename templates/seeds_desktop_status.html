@@ -1,0 +1,381 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Seeds Desktop Status - TSS Services</title>
+    <link rel="icon" type="image/x-icon" href="/static/favicon.png">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://unpkg.com/@phosphor-icons/web@2.1.1"></script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700;800&family=Space+Grotesk:wght@500;600;700&display=swap');
+        :root { --cyan:#0891b2; --navy:#082f49; --ink:#16324f; }
+        * { box-sizing:border-box; }
+        body { margin:0; min-height:100vh; color:var(--ink); font-family:'DM Sans','Segoe UI',sans-serif;
+               background:radial-gradient(circle at 10% 0%,#cffafe 0,transparent 32%),#f5f8fb; }
+        .status-shell { max-width:1380px; margin:0 auto; padding:26px 18px 48px; }
+        .hero { position:relative; overflow:hidden; color:#fff; border-radius:26px; padding:28px 30px;
+                background:linear-gradient(120deg,#082f49,#0e7490 62%,#06b6d4);
+                box-shadow:0 24px 60px rgba(8,47,73,.18); }
+        .hero:after { content:''; position:absolute; width:300px; height:300px; right:-90px; top:-150px;
+                      border:1px solid rgba(255,255,255,.18); border-radius:50%; box-shadow:0 0 0 26px rgba(255,255,255,.05),0 0 0 52px rgba(255,255,255,.04); }
+        .hero > * { position:relative; z-index:1; }
+        .eyebrow { color:#a5f3fc; font-size:11px; font-weight:800; letter-spacing:.18em; text-transform:uppercase; }
+        .hero h1 { margin:5px 0 8px; font-family:'Space Grotesk',sans-serif; font-size:clamp(25px,4vw,38px); letter-spacing:-.04em; }
+        .hero p { max-width:680px; color:rgba(236,254,255,.82); font-size:14px; line-height:1.6; }
+        .hero-link { display:inline-flex; align-items:center; gap:7px; margin-top:20px; border:1px solid rgba(255,255,255,.25);
+                     border-radius:12px; padding:9px 13px; color:#fff; font-size:13px; font-weight:700; text-decoration:none; }
+        .hero-link:hover { background:rgba(255,255,255,.1); }
+        .stat-grid { display:grid; grid-template-columns:repeat(3,minmax(0,1fr)); gap:12px; margin:-26px 24px 26px; position:relative; z-index:2; }
+        .stat { padding:16px 18px; background:rgba(255,255,255,.95); border:1px solid #e0f2fe; border-radius:16px; box-shadow:0 10px 24px rgba(15,23,42,.08); }
+        .stat-label { color:#64748b; font-size:11px; font-weight:800; letter-spacing:.08em; text-transform:uppercase; }
+        .stat-value { display:block; margin-top:3px; color:#0f172a; font-family:'Space Grotesk',sans-serif; font-size:25px; font-weight:700; }
+        .toolbar { display:flex; flex-wrap:wrap; align-items:end; justify-content:space-between; gap:14px; margin-bottom:20px; }
+        .toolbar h2 { margin:0; font-family:'Space Grotesk',sans-serif; font-size:21px; letter-spacing:-.03em; }
+        .toolbar-subtitle { margin:4px 0 0; color:#64748b; font-size:13px; }
+        .filters { display:flex; flex-wrap:wrap; gap:8px; }
+        .field { display:flex; flex-direction:column; gap:5px; }
+        .field label { color:#64748b; font-size:10px; font-weight:800; letter-spacing:.07em; text-transform:uppercase; }
+        .input { min-width:130px; border:1px solid #dbe5ed; border-radius:10px; background:#fff; color:#334155; padding:9px 11px; font:inherit; font-size:12px; outline:0; }
+        .input:focus { border-color:#06b6d4; box-shadow:0 0 0 3px rgba(6,182,212,.12); }
+        .btn { display:inline-flex; align-items:center; justify-content:center; gap:7px; border:0; border-radius:10px; padding:9px 12px; cursor:pointer; font:inherit; font-size:12px; font-weight:800; transition:.18s; }
+        .btn:hover { transform:translateY(-1px); }
+        .btn-soft { background:#ecfeff; color:#0e7490; }
+        .btn-soft:hover { background:#cffafe; }
+        .btn-dark { background:#0e7490; color:#fff; box-shadow:0 5px 12px rgba(14,116,144,.18); }
+        .btn-dark:hover { background:#155e75; }
+        .table-card { overflow:hidden; border:1px solid #e2e8f0; border-radius:20px; background:rgba(255,255,255,.94); box-shadow:0 9px 28px rgba(15,23,42,.06); }
+        .table-controls { display:flex; align-items:center; justify-content:space-between; gap:14px; padding:14px 16px; border-bottom:1px solid #eef2f6; background:#fff; }
+        .table-summary { color:#64748b; font-size:12px; }
+        .table-summary strong { color:#334155; font-weight:800; }
+        .rows-control { display:flex; align-items:center; gap:8px; color:#64748b; font-size:12px; font-weight:700; white-space:nowrap; }
+        .rows-control .input { min-width:86px; padding:8px 10px; }
+        .table-wrap { overflow:auto; max-height:620px; }
+        table { width:100%; border-collapse:collapse; min-width:850px; }
+        th { position:sticky; top:0; z-index:1; padding:12px 15px; background:#f8fafc; color:#64748b; font-size:10px; font-weight:800; letter-spacing:.08em; text-align:left; text-transform:uppercase; }
+        td { padding:12px 15px; border-top:1px solid #f1f5f9; color:#334155; font-size:12px; vertical-align:top; }
+        tr:hover td { background:#f8fdff; }
+        .list-name { color:#0e7490; font-weight:800; }
+        .profile-name { color:#0f172a; font-weight:800; }
+        .status-history, .date-history { display:flex; flex-direction:column; gap:5px; }
+        .status { display:inline-flex; align-items:center; gap:6px; width:max-content; border-radius:999px; padding:4px 9px; font-size:10px; font-weight:800; }
+        .status:before { content:''; width:6px; height:6px; border-radius:50%; background:currentColor; }
+        .status-connected { color:#047857; background:#d1fae5; }
+        .status-proxy-down,.status-notconnected { color:#b45309; background:#fef3c7; }
+        .status-disabled { color:#be123c; background:#ffe4e6; }
+        .status-empty { color:#64748b; background:#f1f5f9; }
+        .status-other { color:#1d4ed8; background:#dbeafe; }
+        .history-date { color:#475569; font-size:11px; }
+        .history-date small { color:#94a3b8; font-size:10px; }
+        .email-value { max-width:260px; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }
+        .empty { padding:62px 20px; border:1px dashed #cbd5e1; border-radius:20px; color:#94a3b8; text-align:center; }
+        .empty i { display:block; margin-bottom:10px; color:#67e8f9; font-size:40px; }
+        .empty h3 { margin:0; color:#475569; font-size:16px; }
+        .empty p { margin:5px 0 0; font-size:13px; }
+        .no-match { padding:38px 20px; color:#94a3b8; text-align:center; }
+        .pagination { display:flex; align-items:center; justify-content:center; gap:6px; padding:14px 16px; border-top:1px solid #eef2f6; background:#fff; }
+        .page-btn { display:inline-flex; align-items:center; justify-content:center; min-width:32px; height:32px; padding:0 8px; border:1px solid #dbe5ed; border-radius:9px; background:#fff; color:#64748b; font:inherit; font-size:12px; font-weight:800; transition:.18s; }
+        .page-btn:hover:not(:disabled) { border-color:#67e8f9; background:#ecfeff; color:#0e7490; }
+        .page-btn.active { border-color:#0e7490; background:#0e7490; color:#fff; box-shadow:0 4px 10px rgba(14,116,144,.18); }
+        .page-btn:disabled { cursor:not-allowed; opacity:.4; }
+        .page-ellipsis { display:inline-flex; align-items:center; justify-content:center; min-width:20px; height:32px; color:#94a3b8; font-size:13px; }
+        .download-bar { display:flex; flex-wrap:wrap; gap:7px; margin-bottom:18px; }
+        .download-label { width:100%; color:#64748b; font-size:11px; font-weight:800; letter-spacing:.07em; text-transform:uppercase; }
+        .toast { position:fixed; right:20px; bottom:20px; z-index:20; padding:12px 15px; border-radius:12px; color:#fff;
+                 background:#0f766e; box-shadow:0 10px 30px rgba(15,23,42,.2); font-size:13px; font-weight:700; opacity:0;
+                 transform:translateY(12px); pointer-events:none; transition:.2s; }
+        .toast.show { opacity:1; transform:translateY(0); }
+        @media(max-width:700px) { .status-shell { padding:0 0 36px; } .hero { border-radius:0 0 22px 22px; padding:25px 19px 38px; } .stat-grid { margin:-20px 12px 22px; grid-template-columns:1fr; gap:8px; } .stat { padding:12px 15px; } .toolbar { padding:0 16px; } .table-card { margin:0 12px; border-radius:16px; } .table-controls { align-items:flex-start; flex-direction:column-reverse; gap:10px; } .rows-control { justify-content:space-between; width:100%; } .pagination { flex-wrap:wrap; } .download-bar { padding:0 16px; } }
+    </style>
+</head>
+<body>
+    {% set page_title = "Seeds Desktop Status" %}
+    {% set page_icon = "ph-desktop" %}
+    {% include '_header.html' %}
+
+    <main class="status-shell">
+        <section class="hero">
+            <div class="eyebrow">Desktop monitoring workspace</div>
+            <h1>Seeds Desktop Status</h1>
+            <p>Review profile status history from all checker lists in one table. A profile appears once per list, with every status found in the selected date range shown in its history.</p>
+            <a class="hero-link" href="{{ url_for('services') }}"><i class="ph ph-arrow-left"></i> Back to Services</a>
+        </section>
+
+        <section class="stat-grid" aria-label="Status summary">
+            <div class="stat"><span class="stat-label">Total sessions</span><span class="stat-value" id="listCount">{{ lists|length }}</span></div>
+            <div class="stat"><span class="stat-label">Profiles tracked</span><span class="stat-value" id="recordCount">0</span></div>
+            <div class="stat"><span class="stat-label">Visible now</span><span class="stat-value" id="visibleCount">0</span></div>
+        </section>
+
+        {% if lists %}
+        <section class="toolbar">
+            <div>
+                <h2>All profile statuses</h2>
+                <p class="toolbar-subtitle">Profiles are grouped separately for each list. Filter by list, status, or check date.</p>
+            </div>
+            <div class="filters">
+                <div class="field"><label for="listFilter">Session</label><select class="input" id="listFilter"><option value="">All Sessions</option>{% for list in lists %}<option value="{{ list.name }}">{{ list.name }}</option>{% endfor %}</select></div>
+                <div class="field"><label for="statusFilter">Status</label><select class="input" id="statusFilter"><option value="">All statuses</option></select></div>
+                <div class="field"><label for="profileFrom">Profile from</label><input class="input" id="profileFrom" type="number" min="0" step="1" inputmode="numeric" placeholder="20"></div>
+                <div class="field"><label for="profileTo">Profile to</label><input class="input" id="profileTo" type="number" min="0" step="1" inputmode="numeric" placeholder="100"></div>
+                <div class="field"><label for="fromDate">Checked from</label><input class="input" id="fromDate" type="date"></div>
+                <div class="field"><label for="toDate">Checked to</label><input class="input" id="toDate" type="date"></div>
+                <button class="btn btn-dark" type="button" onclick="downloadFiltered()"><i class="ph ph-download-simple"></i> Download</button>
+                <button class="btn btn-soft" type="button" onclick="clearFilters()"><i class="ph ph-funnel-x"></i> Clear</button>
+            </div>
+        </section>
+
+        <section class="table-card">
+            <div class="table-controls">
+                <div class="table-summary" id="tableSummary" aria-live="polite"></div>
+                <label class="rows-control" for="pageSize">
+                    <span>Rows per page</span>
+                    <select class="input" id="pageSize" aria-label="Rows per page">
+                        <option value="20" selected>20</option>
+                        <option value="50">50</option>
+                        <option value="100">100</option>
+                        <option value="150">150</option>
+                        <option value="all">All</option>
+                    </select>
+                </label>
+            </div>
+            <div class="table-wrap">
+                <table aria-label="Seeds desktop profile statuses">
+                    <thead><tr><th>Session</th><th>Profile</th><th>Status history</th><th>Email</th><th>Dates of check</th></tr></thead>
+                    <tbody id="statusTableBody"></tbody>
+                </table>
+                <div class="no-match" id="globalNoMatch" hidden>No profiles match the current filters.</div>
+            </div>
+            <nav class="pagination" id="pagination" aria-label="Table pages"></nav>
+        </section>
+        {% else %}
+        <section class="empty">
+            <i class="ph ph-folder-open"></i>
+            <h3>No desktop status lists yet</h3>
+            <p>When a checker start writing seeds desktop status into Our <strong>DATABASE</strong>, it will appear here automatically.</p>
+        </section>
+        {% endif %}
+    </main>
+    <div id="toast" class="toast" role="status"></div>
+
+    <script>
+        const sourceLists = {{ lists|tojson }};
+        const allRecords = sourceLists.flatMap(list => list.records.map(record => ({
+            ...record, listName: list.name, filename: list.filename
+        })));
+        const tableBody = document.getElementById('statusTableBody');
+        const statusFilter = document.getElementById('statusFilter');
+        const listFilter = document.getElementById('listFilter');
+        const pageSize = document.getElementById('pageSize');
+        const tableSummary = document.getElementById('tableSummary');
+        const pagination = document.getElementById('pagination');
+        const toast = document.getElementById('toast');
+        let toastTimer;
+        let currentPage = 1;
+
+        function escapeHtml(value) {
+            return String(value ?? '').replace(/[&<>"']/g, char => ({
+                '&':'&amp;', '<':'&lt;', '>':'&gt;', '"':'&quot;', "'":'&#039;'
+            }[char]));
+        }
+        function statusClass(status) {
+            const clean = status.toLowerCase().replace(/\s+/g, '-');
+            return ['connected','proxy-down','notconnected','disabled','empty'].includes(clean) ? `status-${clean}` : 'status-other';
+        }
+        function showToast(message) {
+            toast.textContent = message;
+            toast.className = 'toast show';
+            clearTimeout(toastTimer);
+            toastTimer = setTimeout(() => toast.classList.remove('show'), 3000);
+        }
+        function groupedRecords() {
+            const status = statusFilter?.value || '';
+            const listName = listFilter?.value || '';
+            const profileFrom = document.getElementById('profileFrom')?.value.trim() || '';
+            const profileTo = document.getElementById('profileTo')?.value.trim() || '';
+            const from = document.getElementById('fromDate')?.value || '';
+            const to = document.getElementById('toDate')?.value || '';
+            const groups = new Map();
+            allRecords.filter(record =>
+                (!listName || record.listName === listName) &&
+                (!status || record.status.toLowerCase() === status) &&
+                ((!profileFrom && !profileTo) || (
+                    Number.isFinite(Number(String(record.profile).trim())) &&
+                    (!profileFrom || Number(String(record.profile).trim()) >= Number(profileFrom)) &&
+                    (!profileTo || Number(String(record.profile).trim()) <= Number(profileTo))
+                )) &&
+                (!from || (record.date_iso && record.date_iso >= from)) &&
+                (!to || (record.date_iso && record.date_iso <= to))
+            ).forEach(record => {
+                const key = `${record.listName}\u0000${record.profile}`;
+                if (!groups.has(key)) groups.set(key, []);
+                groups.get(key).push(record);
+            });
+            return [...groups.values()].sort((a, b) =>
+                a[0].listName.localeCompare(b[0].listName) ||
+                a[0].profile.localeCompare(b[0].profile, undefined, {numeric:true})
+            );
+        }
+        function renderPagination(totalRows) {
+            if (!pagination || !pageSize) return;
+            const selectedSize = pageSize.value;
+            const size = selectedSize === 'all' ? totalRows || 1 : Number(selectedSize);
+            const totalPages = Math.max(1, Math.ceil(totalRows / size));
+            currentPage = Math.min(Math.max(currentPage, 1), totalPages);
+            pagination.innerHTML = '';
+            pagination.hidden = totalRows === 0 || totalPages === 1;
+            if (pagination.hidden) return;
+
+            const addButton = (label, page, options = {}) => {
+                const button = document.createElement('button');
+                button.type = 'button';
+                button.className = `page-btn${options.active ? ' active' : ''}`;
+                button.textContent = label;
+                button.disabled = Boolean(options.disabled);
+                if (options.active) button.setAttribute('aria-current', 'page');
+                button.setAttribute('aria-label', options.ariaLabel || `Page ${page}`);
+                button.addEventListener('click', () => {
+                    currentPage = page;
+                    renderTable();
+                });
+                pagination.appendChild(button);
+            };
+            const addEllipsis = () => {
+                const span = document.createElement('span');
+                span.className = 'page-ellipsis';
+                span.textContent = '…';
+                span.setAttribute('aria-hidden', 'true');
+                pagination.appendChild(span);
+            };
+
+            addButton('‹', currentPage - 1, { disabled: currentPage === 1, ariaLabel: 'Previous page' });
+            const pages = new Set([1, totalPages, currentPage - 1, currentPage, currentPage + 1]);
+            const orderedPages = [...pages].filter(page => page > 0 && page <= totalPages).sort((a, b) => a - b);
+            orderedPages.forEach((page, index) => {
+                if (index > 0 && page - orderedPages[index - 1] > 1) addEllipsis();
+                addButton(String(page), page, { active: page === currentPage });
+            });
+            addButton('›', currentPage + 1, { disabled: currentPage === totalPages, ariaLabel: 'Next page' });
+        }
+
+        function renderTable() {
+            const groups = groupedRecords();
+            const selectedSize = pageSize?.value || '20';
+            const size = selectedSize === 'all' ? groups.length || 1 : Number(selectedSize);
+            const totalPages = Math.max(1, Math.ceil(groups.length / size));
+            currentPage = Math.min(Math.max(currentPage, 1), totalPages);
+            const start = selectedSize === 'all' ? 0 : (currentPage - 1) * size;
+            const visibleGroups = selectedSize === 'all' ? groups : groups.slice(start, start + size);
+            tableBody.innerHTML = visibleGroups.map(records => {
+                const first = records[0];
+                const statuses = [...new Map(records.map(record => [record.status, record])).values()];
+                const emails = [...new Set(records.map(record => record.email).filter(Boolean))];
+                const dates = [...new Map(records.map(record => [`${record.date}|${record.status}`, record])).values()]
+                    .sort((a, b) => (b.date_iso || '').localeCompare(a.date_iso || ''));
+                return `<tr>
+                    <td class="list-name">${escapeHtml(first.listName)}</td>
+                    <td class="profile-name">${escapeHtml(first.profile)}</td>
+                    <td><div class="status-history">${statuses.map(record =>
+                        `<span class="status ${statusClass(record.status)}" title="${escapeHtml(record.status)}">${escapeHtml(record.status)}</span>`
+                    ).join('')}</div></td>
+                    <td><div class="email-value" title="${escapeHtml(emails.join(' / '))}">${escapeHtml(emails.join(' / ') || '—')}</div></td>
+                    <td><div class="date-history">${dates.map(record =>
+                        `<span class="history-date">${escapeHtml(record.date)} <small>${escapeHtml(record.status)}</small></span>`
+                    ).join('')}</div></td>
+                </tr>`;
+            }).join('');
+            const filteredSessionCount = new Set(groups.map(records => records[0].listName)).size;
+            const filteredProfileCount = new Set(groups.map(records => `${records[0].listName}\u0000${records[0].profile}`)).size;
+            document.getElementById('listCount').textContent = filteredSessionCount;
+            document.getElementById('recordCount').textContent = filteredProfileCount;
+            document.getElementById('visibleCount').textContent = visibleGroups.length;
+            document.getElementById('globalNoMatch').hidden = groups.length > 0;
+            if (tableSummary) {
+                const firstVisible = groups.length ? start + 1 : 0;
+                const lastVisible = selectedSize === 'all' ? groups.length : Math.min(start + size, groups.length);
+                tableSummary.innerHTML = groups.length
+                    ? `Showing <strong>${firstVisible}–${lastVisible}</strong> of <strong>${groups.length}</strong> profiles`
+                    : 'No profiles to display';
+            }
+            renderPagination(groups.length);
+        }
+        function csvCell(value) {
+            return `"${String(value ?? '').replace(/"/g, '""')}"`;
+        }
+        function downloadFiltered() {
+            const groups = groupedRecords();
+            if (!groups.length) {
+                showToast('No matching profiles to download.');
+                return;
+            }
+            const rows = [
+                ['List name', 'Profile', 'Status history', 'Email', 'Dates of check'],
+                ...groups.map(records => {
+                    const first = records[0];
+                    const statuses = [...new Set(records.map(record => record.status))];
+                    const emails = [...new Set(records.map(record => record.email).filter(Boolean))];
+                    const dates = [...new Map(records.map(record => [`${record.date}|${record.status}`, record])).values()]
+                        .sort((a, b) => (b.date_iso || '').localeCompare(a.date_iso || ''))
+                        .map(record => `${record.date} (${record.status})`);
+                    return [
+                        first.listName,
+                        first.profile,
+                        statuses.join(' / '),
+                        emails.join(' / '),
+                        dates.join(' / ')
+                    ];
+                })
+            ];
+            const csv = '\uFEFF' + rows.map(row => row.map(csvCell).join(',')).join('\r\n');
+            const blob = new Blob([csv], {type:'text/csv;charset=utf-8'});
+            const url = URL.createObjectURL(blob);
+            const link = document.createElement('a');
+            link.href = url;
+            link.download = 'seeds-desktop-status.csv';
+            document.body.appendChild(link);
+            link.click();
+            link.remove();
+            setTimeout(() => URL.revokeObjectURL(url), 1000);
+            showToast(`${groups.length} profile${groups.length === 1 ? '' : 's'} downloaded.`);
+        }
+        function clearFilters() {
+            listFilter.value = '';
+            statusFilter.value = '';
+            document.getElementById('profileFrom').value = '';
+            document.getElementById('profileTo').value = '';
+            document.getElementById('fromDate').value = '';
+            document.getElementById('toDate').value = '';
+            currentPage = 1;
+            renderTable();
+        }
+        [...new Set(allRecords.map(record => record.status.toLowerCase()))].sort().forEach(status => {
+            const option = document.createElement('option');
+            option.value = status;
+            option.textContent = status.replace(/\b\w/g, char => char.toUpperCase());
+            statusFilter.appendChild(option);
+        });
+        [listFilter, statusFilter, document.getElementById('profileFrom'), document.getElementById('profileTo'), document.getElementById('fromDate'), document.getElementById('toDate')]
+            .forEach(input => input?.addEventListener('change', () => {
+                currentPage = 1;
+                renderTable();
+            }));
+        pageSize?.addEventListener('change', () => {
+            currentPage = 1;
+            renderTable();
+        });
+
+// Set "Checked from" to today's date by default
+const fromDate = document.getElementById('fromDate');
+
+if (fromDate && !fromDate.value) {
+    const today = new Date();
+    const localDate = new Date(today.getTime() - today.getTimezoneOffset() * 60000)
+        .toISOString()
+        .split('T')[0];
+
+    fromDate.value = localDate;
+}
+        renderTable();
+    </script>
+</body>
+</html>
