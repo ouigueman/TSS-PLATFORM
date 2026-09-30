@@ -9,6 +9,7 @@ This project also demonstrates how a Python web application can connect browser-
 ## What the platform includes
 
 ### Gmail and email workflows
+<img width="1908" height="915" alt="image" src="https://github.com/user-attachments/assets/27d97a9a-9ee1-4221-8ef4-00b4834c7c38" />
 
 - View Gmail accounts and email folders through IMAP.
 - Search, filter, and inspect messages, with live updates for supported views.
